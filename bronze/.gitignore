@@ -1,0 +1,21 @@
+# AI Employee Vault (local Obsidian data - not version controlled)
+AI_Employee_Vault/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.tmp
