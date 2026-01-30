@@ -19,3 +19,8 @@ Thumbs.db
 # Editor files
 *.swp
 *.tmp
+
+# Gmail credentials (DO NOT COMMIT)
+credentials.json
+token.json
+token.pickle
