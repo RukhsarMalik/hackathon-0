@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "email": {
+      "command": "python3",
+      "args": ["email_mcp_server.py"],
+      "cwd": "silver/"
+    }
+  }
+}

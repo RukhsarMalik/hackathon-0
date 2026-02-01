@@ -1,0 +1,16 @@
+.env
+credentials.json
+token.pickle
+token.json
+.pids/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+*.log
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
