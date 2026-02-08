@@ -1,0 +1,8 @@
+node_modules/
+.mcp.json
+.claude/
+.obsidian/
+.pids/
+nul
+history/
+**/__pycache__/

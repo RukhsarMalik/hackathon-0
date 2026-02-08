@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "email": {
+      "command": "python3",
+      "args": ["email_mcp_server.py"],
+      "cwd": "silver/"
+    },
+    "linkedin": {
+      "command": "node",
+      "args": ["./mcp-servers/linkedin-mcp/index.js"],
+      "cwd": "gold/"
+    },
+    "facebook": {
+      "command": "node",
+      "args": ["./mcp-servers/facebook-mcp/index.js"],
+      "cwd": "gold/"
+    },
+    "odoo": {
+      "command": "node",
+      "args": ["./mcp-servers/odoo-mcp/index.js"],
+      "cwd": "gold/"
+    }
+  }
+}

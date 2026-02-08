@@ -1,15 +1,16 @@
 ---
 name: LinkedIn Poster v1.0
-purpose: Generate LinkedIn post content for business promotion
+purpose: Generate LinkedIn post content for business promotion with MCP integration
 trigger: LINKEDIN_POST_*.md action file in Needs_Action/
 created: 2026-01-30
-version: 1.0
+updated: 2026-02-05
+version: 1.1
 ---
 
 # LinkedIn Poster Agent Skill
 
 ## Purpose
-Generate engaging LinkedIn post content based on the requested post type. All generated content goes to Pending_Approval/ for human review before publishing.
+Generate engaging LinkedIn post content based on the requested post type. With Gold Tier MCP integration, posts can be automatically published when moved to /Approved/ folder.
 
 ## Trigger Conditions
 - An action file with `type: linkedin_post` exists in Needs_Action/
@@ -78,3 +79,24 @@ Followed by the generated post content.
 4. Create LINKEDIN_READY_*.md in Pending_Approval/
 5. Update Dashboard.md with activity
 6. Move original action file to Done/
+
+## LinkedIn MCP Integration (Gold Tier)
+
+When approval file moved to /Approved/:
+
+1. SKILL_ApprovalHandler calls LinkedIn MCP
+2. Use tool: post_to_linkedin
+3. Parameters:
+   - content: [post text from approval file]
+   - approval_file: [path to approved file]
+4. Handle response:
+   - Success: Log post URL, update Dashboard
+   - Failure: Move to /Needs_Action/ with ERROR_ prefix
+
+## Error Handling
+
+If LinkedIn MCP fails:
+- Check error message
+- If token expired: Alert human to refresh token
+- If rate limit: Queue for retry in 1 hour
+- If other error: Log and create manual posting reminder

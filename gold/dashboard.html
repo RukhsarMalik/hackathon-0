@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Employee Dashboard - Gold Tier</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --card: #1a1d27;
+    --border: #2a2d3a;
+    --text: #e1e4ed;
+    --muted: #8b8fa3;
+    --accent: #f0b429;
+    --green: #34d399;
+    --red: #f87171;
+    --blue: #60a5fa;
+    --purple: #a78bfa;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height:100vh; }
+  .header { padding: 24px 32px; display:flex; align-items:center; justify-content:space-between; border-bottom: 1px solid var(--border); }
+  .header h1 { font-size: 22px; font-weight: 600; }
+  .header h1 span { color: var(--accent); }
+  .badge { font-size: 11px; background: var(--accent); color: #000; padding: 3px 10px; border-radius: 12px; font-weight: 700; letter-spacing: 0.5px; }
+  .live-dot { width:8px; height:8px; background:var(--green); border-radius:50%; display:inline-block; margin-right:6px; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  .refresh-info { color: var(--muted); font-size: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 24px 32px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .card h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 16px; }
+  .stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .stat-row:last-child { border-bottom: none; }
+  .stat-label { color: var(--muted); font-size: 14px; }
+  .stat-value { font-weight: 600; font-size: 14px; }
+  .stat-big { font-size: 32px; font-weight: 700; color: var(--accent); }
+  .status-operational { color: var(--green); }
+  .status-down { color: var(--red); }
+  .service-item { display:flex; align-items:flex-start; gap:10px; padding:10px 0; border-bottom:1px solid var(--border); }
+  .service-item:last-child { border-bottom:none; }
+  .service-dot { width:8px; height:8px; background:var(--green); border-radius:50%; margin-top:6px; flex-shrink:0; }
+  .service-name { font-weight:600; font-size:14px; }
+  .service-desc { color:var(--muted); font-size:12px; }
+  .timeline { max-height: 400px; overflow-y: auto; }
+  .timeline-item { padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .timeline-item:last-child { border-bottom: none; }
+  .timeline-time { color: var(--blue); font-size: 11px; font-family: monospace; }
+  .timeline-event { color: var(--text); margin-top: 2px; }
+  .pending-none { color: var(--muted); font-style: italic; }
+  .full-width { grid-column: 1 / -1; }
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .mini-stat { text-align: center; }
+  .mini-stat .stat-big { font-size: 28px; }
+  .mini-stat .stat-label { font-size: 11px; margin-top: 4px; }
+  @media (max-width: 768px) {
+    .grid { padding: 16px; gap: 12px; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .header { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1><span>Gold</span> AI Employee Dashboard</h1>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <span class="badge">GOLD TIER</span>
+    <span class="refresh-info"><span class="live-dot"></span>Auto-refresh 5s</span>
+  </div>
+</div>
+
+<div class="grid" id="root">
+  <div class="card"><h2>Loading...</h2></div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function render(d) {
+  const ss = d.system_status;
+  const isOp = (ss.status || '').toLowerCase().includes('operational');
+
+  let html = '';
+
+  // System Status card
+  html += `<div class="card">
+    <h2>System Status</h2>
+    <div style="margin-bottom:16px">
+      <span class="stat-big ${isOp ? 'status-operational' : 'status-down'}">${isOp ? 'Operational' : esc(ss.status || 'Unknown')}</span>
+    </div>
+    <div class="stat-row"><span class="stat-label">Active Tasks</span><span class="stat-value">${esc(ss.active_tasks || '0')}</span></div>
+    <div class="stat-row"><span class="stat-label">Completed Today</span><span class="stat-value">${esc(ss.completed_today || '0')}</span></div>
+    <div class="stat-row"><span class="stat-label">Last Activity</span><span class="stat-value" style="font-size:12px">${esc(ss.last_activity || 'N/A')}</span></div>
+  </div>`;
+
+  // Quick Stats
+  const qs = d.quick_stats;
+  html += `<div class="card">
+    <h2>Quick Stats</h2>
+    <div class="stats-grid">
+      <div class="mini-stat"><div class="stat-big">${esc(qs.total_tasks_processed || '0')}</div><div class="stat-label">Tasks Processed</div></div>
+      <div class="mini-stat"><div class="stat-big" style="color:var(--green)">${esc(qs.success_rate || 'N/A')}</div><div class="stat-label">Success Rate</div></div>
+      <div class="mini-stat"><div class="stat-big" style="color:var(--red)">${esc(qs.malformed_rate || '0%')}</div><div class="stat-label">Malformed Rate</div></div>
+      <div class="mini-stat"><div class="stat-big" style="color:var(--blue)">${esc(qs.average_processing_time || 'N/A')}</div><div class="stat-label">Avg Time</div></div>
+    </div>
+  </div>`;
+
+  // Plan & Email Stats
+  const ps = d.plan_stats, es = d.email_approval_stats;
+  html += `<div class="card">
+    <h2>Plan Generation</h2>
+    <div class="stat-row"><span class="stat-label">Created</span><span class="stat-value">${esc(ps.plans_created||'0')}</span></div>
+    <div class="stat-row"><span class="stat-label">Completed</span><span class="stat-value">${esc(ps.plans_completed||'0')}</span></div>
+    <div class="stat-row"><span class="stat-label">Failed</span><span class="stat-value">${esc(ps.plans_failed||'0')}</span></div>
+    <div class="stat-row"><span class="stat-label">Last Activity</span><span class="stat-value" style="font-size:12px">${esc(ps.last_plan_activity||'N/A')}</span></div>
+  </div>`;
+
+  html += `<div class="card">
+    <h2>Email Approvals</h2>
+    <div class="stat-row"><span class="stat-label">Approved</span><span class="stat-value" style="color:var(--green)">${esc(es.emails_approved||'0')}</span></div>
+    <div class="stat-row"><span class="stat-label">Rejected</span><span class="stat-value" style="color:var(--red)">${esc(es.emails_rejected||'0')}</span></div>
+    <div class="stat-row"><span class="stat-label">Sent</span><span class="stat-value">${esc(es.emails_sent||'0')}</span></div>
+    <div class="stat-row"><span class="stat-label">Last Activity</span><span class="stat-value" style="font-size:12px">${esc(es.last_email_activity||'N/A')}</span></div>
+  </div>`;
+
+  // Services
+  html += `<div class="card">
+    <h2>Services</h2>
+    ${d.services.map(s => `<div class="service-item"><div class="service-dot"></div><div><div class="service-name">${esc(s.name)}</div><div class="service-desc">${esc(s.description)}</div></div></div>`).join('')}
+  </div>`;
+
+  // Email & File Processing
+  const ep = d.email_processing, fp = d.file_processing;
+  html += `<div class="card">
+    <h2>Processing Summary</h2>
+    <div class="stat-row"><span class="stat-label">Emails Detected</span><span class="stat-value">${esc(ep.total_emails_detected||'0')}</span></div>
+    <div class="stat-row"><span class="stat-label">Valid Processed</span><span class="stat-value" style="color:var(--green)">${esc(ep.valid_emails_processed||'0')}</span></div>
+    <div class="stat-row"><span class="stat-label">Malformed</span><span class="stat-value" style="color:var(--red)">${esc(ep['malformed_0-byte']||'0')}</span></div>
+    <div class="stat-row"><span class="stat-label">Files Detected</span><span class="stat-value">${esc(fp.files_detected||'0')}</span></div>
+    <div class="stat-row"><span class="stat-label">Files Processed</span><span class="stat-value">${esc(fp.files_processed||'0')}</span></div>
+  </div>`;
+
+  // Pending Actions
+  html += `<div class="card">
+    <h2>Pending Actions</h2>
+    ${d.pending_actions.length ? d.pending_actions.map(a => `<div class="stat-row"><span class="stat-value">${esc(a)}</span></div>`).join('') : '<div class="pending-none">No pending actions</div>'}
+  </div>`;
+
+  // Recent Activity (full width)
+  html += `<div class="card full-width">
+    <h2>Recent Activity</h2>
+    <div class="timeline">
+      ${d.recent_activity.map(a => `<div class="timeline-item"><div class="timeline-time">${esc(a.time)}</div><div class="timeline-event">${esc(a.event)}</div></div>`).join('')}
+    </div>
+  </div>`;
+
+  $('root').innerHTML = html;
+}
+
+async function refresh() {
+  try {
+    const r = await fetch('/api/dashboard');
+    if (r.ok) render(await r.json());
+  } catch(e) {
+    console.error('Refresh failed', e);
+  }
+}
+
+refresh();
+setInterval(refresh, 5000);
+</script>
+</body>
+</html>

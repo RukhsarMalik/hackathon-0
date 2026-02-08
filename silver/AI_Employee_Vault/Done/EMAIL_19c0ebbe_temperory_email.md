@@ -5,7 +5,7 @@ from_name: Rukhsar Malik
 subject: temperory email
 received: 2026-01-30T17:10:58.105973
 priority: high
-status: pending
+status: completed
 gmail_id: 19c0ebbed4099f04
 ---
 

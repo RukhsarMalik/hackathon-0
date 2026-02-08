@@ -1,0 +1,30 @@
+{
+  "mcpServers": {
+    "linkedin": {
+      "command": "node",
+      "args": ["./mcp-servers/linkedin-mcp/index.js"],
+      "env": {
+        "LINKEDIN_ACCESS_TOKEN": "${LINKEDIN_ACCESS_TOKEN}",
+        "LINKEDIN_PERSON_URN": "${LINKEDIN_PERSON_URN}"
+      }
+    },
+    "facebook": {
+      "command": "node",
+      "args": ["./mcp-servers/facebook-mcp/index.js"],
+      "env": {
+        "FACEBOOK_PAGE_ID": "${FACEBOOK_PAGE_ID}",
+        "FACEBOOK_PAGE_ACCESS_TOKEN": "${FACEBOOK_PAGE_ACCESS_TOKEN}"
+      }
+    },
+    "odoo": {
+      "command": "node",
+      "args": ["./mcp-servers/odoo-mcp/index.js"],
+      "env": {
+        "ODOO_URL": "${ODOO_URL}",
+        "ODOO_DB": "${ODOO_DB}",
+        "ODOO_USERNAME": "${ODOO_USERNAME}",
+        "ODOO_PASSWORD": "${ODOO_PASSWORD}"
+      }
+    }
+  }
+}

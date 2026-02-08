@@ -208,3 +208,11 @@ Wait for consent; never auto-create ADRs. Group related decisions (stacks, authe
 
 ## Code Standards
 See `.specify/memory/constitution.md` for code quality, testing, performance, security, and architecture principles.
+
+## Recent Changes
+- 002-business-intelligence-production: Added Python 3.13 (as specified in project requirements), JavaScript/Node.js for MCP servers + Claude Code CLI, Python multiprocessing, Node.js, odoo-client-python, facebook-sdk, google-api-python-client, file system watchers (watchdog)
+- 001-external-integrations-automation: Added [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
+
+## Active Technologies
+- Python 3.13 (as specified in project requirements), JavaScript/Node.js for MCP servers + Claude Code CLI, Python multiprocessing, Node.js, odoo-client-python, facebook-sdk, google-api-python-client, file system watchers (watchdog) (002-business-intelligence-production)
+- File-based storage using local directory structure (Obsidian vault concept), JSON logs (002-business-intelligence-production)

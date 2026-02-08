@@ -150,6 +150,62 @@ The system will then automatically send the email via the MCP email server.
 - Add REVIEW_ prefix to action file name
 - Send notification per Company_Handbook rules
 
+## Accounting Keywords Detection & Handoff
+
+If email content contains any of the following keywords, this email requires accounting processing:
+- "invoice"
+- "send invoice"
+- "billing"
+- "payment received"
+- "paid invoice"
+- "payment confirmation"
+
+### Handoff to SKILL_AccountingManager
+
+When accounting keywords are detected:
+
+1. **Extract accounting details** from email:
+   - Customer name (from sender or email body)
+   - Service/product description
+   - Amount OR (quantity x rate)
+   - Invoice number (for payment emails)
+   - Due date (if mentioned)
+
+2. **Hand off to SKILL_AccountingManager**:
+   - AccountingManager will handle the Odoo MCP interaction
+   - AccountingManager will create the invoice or process payment
+   - AccountingManager will draft the reply email
+
+3. **EmailProcessor responsibilities during handoff**:
+   - Parse and extract relevant details
+   - Pass details to AccountingManager
+   - Move original email to /Done/ after AccountingManager completes
+   - Update Dashboard with processing activity
+
+### Accounting Email Examples
+
+**Invoice Request**:
+```
+Email: "Hi, can you send me an invoice for the 10 hours of web development work?"
+→ Detect: "invoice" keyword
+→ Extract: Service=Web Development, Quantity=10
+→ Handoff to AccountingManager Workflow 1
+```
+
+**Payment Confirmation**:
+```
+Email: "Payment of $1,000 received for Invoice INV/2026/00023"
+→ Detect: "payment received" keyword
+→ Extract: Invoice=INV/2026/00023, Amount=$1,000
+→ Handoff to AccountingManager Workflow 2
+```
+
+### Important
+- Do NOT draft a reply for accounting emails — AccountingManager handles the reply
+- DO still update Dashboard with initial email detection
+- DO still log the email processing activity
+- If AccountingManager is unavailable, flag for human review
+
 ## Company Handbook Integration
 Always reference and apply rules from Company_Handbook.md, especially:
 - Communication tone and style

@@ -1,0 +1,9 @@
+# Core dependencies for AI Employee system
+python-dotenv>=0.19.0
+google-api-python-client>=2.70.0
+google-auth-oauthlib>=0.4.6
+facebook-sdk>=3.1.0
+odoo-client-python>=1.0.0
+watchdog>=2.1.9
+requests>=2.28.0
+PyYAML>=6.0
